@@ -1,9 +1,9 @@
 camera_id,slice_type,frames,risk,rationale
-front,normal,,TODO,TODO
-front,hard,,TODO,TODO
-rear,normal,,TODO,TODO
-rear,hard,,TODO,TODO
-left,normal,,TODO,TODO
-left,hard,,TODO,TODO
-right,normal,,TODO,TODO
-right,hard,,TODO,TODO
+front,normal,30,Bỏ sót người đi bộ hoặc xe máy ở khoảng cách xa do độ phân giải pixel nhỏ,Đánh giá năng lực phát hiện vật thể cơ bản ở tầm nhìn thẳng phía trước trong điều kiện ánh sáng chuẩn
+front,hard,30,Lóa sáng do đèn pha ngược chiều vào ban đêm hoặc ánh nắng gắt trực diện làm bão hòa cảm biến,Kiểm chứng độ bền của model khi gặp điều kiện chiếu sáng cực đoan và vật thể cắt qua seam trước-trái/trước-phải
+rear,normal,20,Nhận diện sai khoảng cách của phương tiện bám đuôi ngay sát cản sau,Kiểm tra độ chính xác phát hiện phương tiện phía sau khi xe di chuyển thẳng tốc độ ổn định
+rear,hard,30,Ống kính bị bám bụi bẩn hoặc giọt nước do cuộn xoáy khí động học phía đuôi xe; chói sáng từ đèn xe phía sau,Đánh giá rủi ro an toàn cao nhất khi lùi xe và xử lý vật cản thấp/người cúi gần đuôi xe
+left,normal,20,Motion blur đối với xe hai bánh vượt tốc độ cao song song với thân xe chủ,Đo lường baseline nhận diện làn bên hông trái cho tính năng giám sát điểm mù
+left,hard,25,Méo quang học fisheye cực đại ở vùng viền và vật thể xuất hiện đồng thời trên vùng chồng seam trước-trái/sau-trái,Đảm bảo bao phủ các tình huống chuyển làn khó và phương tiện đi sát sườn xe
+right,normal,20,Bỏ sót người đi bộ hoặc xe đạp di chuyển cùng chiều ở lề đường bên phụ,Baseline phát hiện chướng ngại vật bên phải trong điều kiện đường thông thoáng
+right,hard,25,Vật thể tĩnh thấp (curb, cột mốc) và người đi bộ đột ngột bước từ vỉa hè vào điểm mù bên phụ,Đánh giá độ nhạy phát hiện chướng ngại vật lề đường khi rẽ phải hoặc tấp lề đỗ xe

@@ -1,0 +1,9 @@
+round: rework
+slice: B3-mid
+sha256: 07373e17292e01b2f73a53be80ecb3149659e101c14db0f81e8dc9321301906e
+code: 0737-3E17
+locked_at: 2026-09-28T18:09:02+07:00
+shapes: box=20, polygon=14
+prefill_kept: 3
+prefill_edited: 0
+new: 17

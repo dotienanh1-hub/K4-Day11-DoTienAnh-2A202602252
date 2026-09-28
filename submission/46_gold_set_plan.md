@@ -8,11 +8,17 @@ không làm thay phần lý do.
 
 | camera_id | Hard case cần chọn | Vì sao dễ sai | Annotation space / calibration cần giữ | Cách review trước khi gọi là gold |
 |---|---|---|---|---|
-| front | TODO | TODO | TODO | TODO |
-| rear | TODO | TODO | TODO | TODO |
-| left | TODO | TODO | TODO | TODO |
-| right | TODO | TODO | TODO | TODO |
+| front | Đèn pha xe đối diện chiếu thẳng vào ban đêm (glare); bóng cây râm xen kẽ nắng gắt; người đi bộ cắt ngang ở vùng seam góc trước-trái/trước-phải | Tương phản ánh sáng cực đoan làm bão hòa cảm biến; độ méo lớn ở rìa thấu kính làm gãy biên dạng box và dễ nhầm class | Raw fisheye 2D space; giữ nguyên thông số extrinsic (góc chúc nắp capo) và intrinsic của camera trước | 2 annotator gán nhãn độc lập mù; 1 senior reviewer đối chiếu context thời gian trước/sau 5 frame để chốt ground truth |
+| rear | Xe bám đuôi siêu gần (< 1m); giọt nước và bụi bẩn bám trên mặt kính do cuộn xoáy khí động học đuôi xe; chướng ngại vật thấp sát cản sau | Góc chúc cao làm thân xe sau bị biến dạng phối cảnh mạnh; vệt khúc xạ nước tạo ảo ảnh quang học gây false positive | Raw fisheye space kèm polygon `ego_body` che cản sau xe chủ; extrinsic calibration gắn tại vị trí nắp cốp/biển số | Review kết hợp đối chiếu với tín hiệu radar/ultrasonic lùi xe; kiểm tra tính liên tục của track qua các frame dừng/tiến |
+| left | Xe hai bánh vượt tốc độ cao sát sườn xe; người đi bộ cắt qua đường ranh giới seam nối giữa camera trước và camera hông trái | Tốc độ tương đối cao gây vệt mờ chuyển động (motion blur); vật thể xuất hiện đồng thời trên 2 camera với 2 góc méo lệch pha | Hệ tọa độ raw fisheye; extrinsic matrix của thấu kính gắn trên ốp gương chiếu hậu ngoài | Xem đồng thời ảnh đồng bộ timestamp của cả camera front và left; tuân thủ policy nhãn đa camera trước khi hợp nhất |
+| right | Người đi bộ hoặc xe đạp đột ngột xuất hiện từ lề đường/vỉa hè cao; vật cản tĩnh thấp (bó vỉa curb, cọc tiêu) trong điểm mù bên phụ | Vật thể bị cong vênh nghiêm trọng theo hình học mắt cá khi áp sát sườn xe; bóng râm thân xe chủ che khuất chướng ngại | Raw fisheye space kèm polygon `ego_body` che thân và gương phụ; extrinsic calibration so với tâm trục bánh xe | Lead adjudicator duyệt ca khó: kiểm tra tracking tiến lui frame để xác định chính xác thời điểm vật bắt đầu bị che khuất |
 
-- Khi nào cần refresh gold set (đổi camera, calibration hoặc rule): TODO
-- Một ca seam/cross-camera cần policy và evidence trước khi ghép hai box: TODO
-- Vì sao peer agreement hoặc quality report trên ảnh một camera chưa chứng minh gold set đúng cho cả bốn camera: TODO
+- Khi nào cần refresh gold set (đổi camera, calibration hoặc rule):
+  1. Thay đổi phần cứng camera: nâng cấp cảm biến (sensor resolution), góc mở FOV của thấu kính fisheye, hoặc đổi kính lọc quang học.
+  2. Thay đổi vị trí lắp đặt rig hoặc khi ma trận hiệu chuẩn (intrinsic/extrinsic calibration) bị trôi dạt (calibration drift) sau chu kỳ bảo dưỡng hoặc va chạm cơ học.
+  3. Cập nhật tài liệu quy chuẩn nhãn (guideline version update): ví dụ điều chỉnh ngưỡng kích thước tối thiểu, quy định gộp rider+bike, hoặc bổ sung/tách class mới.
+- Một ca seam/cross-camera cần policy và evidence trước khi ghép hai box:
+  - Tình huống: Một người đi bộ đứng tại góc trước-phải của xe, xuất hiện đồng thời ở rìa ngoài của camera Front và rìa trước của camera Right. Trên ảnh raw của mỗi camera, annotator đều vẽ một bounding box ôm sát phần nhìn thấy của người này.
+  - Policy & Bằng chứng cần thiết: Không được tự ý xóa một trong hai box hoặc coi đây là lỗi trùng lặp (`DUPLICATE`). Hệ thống cần: (1) Bằng chứng đồng bộ thời gian phần cứng (hardware timestamp synchronization < 5ms) giữa 2 camera; (2) Ma trận chuyển đổi hình học ngoại suy (extrinsic calibration) chính xác giữa camera trước và camera phải; (3) Policy rõ ràng từ downstream/tracking team quy định: giữ nguyên 2 box độc lập trên không gian raw fisheye với chung một Global Tracking ID, hay chiếu hình học lên mặt phẳng BEV/3D để giải bài toán hợp nhất duy nhất.
+- Vì sao peer agreement hoặc quality report trên ảnh một camera chưa chứng minh gold set đúng cho cả bốn camera:
+  - Tính nhất quán giữa các annotator (peer agreement) hoặc báo cáo chất lượng (quality report) trên một camera độc lập chỉ đo lường được sự tuân thủ quy tắc 2D trên một mặt ảnh đơn lẻ. Chỉ số này hoàn toàn không phản ánh được: (1) Tính nhất quán hình học 3D (3D geometric consistency) giữa các góc nhìn khác nhau; (2) Sai số méo và đứt gãy tại các đường seam nối giữa 4 camera; (3) Tính liên tục của định danh vật thể (identity persistence) khi đối tượng chuyển động xuyên qua các trường nhìn; (4) Khả năng tái tạo không gian nhìn từ trên xuống (Bird's-Eye View - BEV) chuẩn xác phục vụ bài toán an toàn xe tự hành 360°.

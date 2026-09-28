@@ -1,1 +1,5 @@
 id,date,question,decision,rationale,status
+D01,2026-09-28,Quy ước gán nhãn cho xe máy có người lái trên frame 140160,Gộp người lái và xe thành một box Bike duy nhất,Tuân thủ nghiêm ngặt luật R03; tránh tách thành 2 box như model gây nhiễu tracking,approved
+D02,2026-09-28,Xử lý các phương tiện ở hậu cảnh xa có chiều cao nhỏ hơn 40px trên frame 140160,Không vẽ bounding box cho xe máy 28px và ô tô con 9px ở xa,Tuân thủ luật phạm vi R01 (ngưỡng H=40px đo trên ảnh gốc fisheye),approved
+D03,2026-09-28,Thuộc tính truncated đối với xe tải mép trái ảnh frame 230910,Đặt truncated=true cho xe tải tại xtl=0 và bám sát phần nhìn thấy,Tuân thủ luật R02 (ảnh fisheye gốc không nắn thẳng) và R05 (bị vành kính cắt),approved
+D04,2026-09-28,Model YOLO26m liên tục tách người lái xe hai bánh và nhầm ThreeWheeler,Escalate sang AI Team để tinh chỉnh model và thêm post-processing NMS,Lỗi xuất phát từ model domain shift không phải lỗi annotator; tạo escalation ticket 1,escalated
